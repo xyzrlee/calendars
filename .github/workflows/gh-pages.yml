@@ -1,0 +1,25 @@
+name: gh-pages
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 16 * * *'
+  repository_dispatch:
+    types: ['gh-pages']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build
+        run: |
+          chmod +x script/shell/*.sh
+          script/shell/venv.sh
+          script/shell/public-holiday-china.sh
+      - name: deploy-gh-pages
+        uses: JamesIves/github-pages-deploy-action@4.0.0
+        with:
+          branch: gh-pages
+          folder: .
